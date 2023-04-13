@@ -12,3 +12,4 @@ Chtěl bych tedy vytvořit něco co bych mohl použít pro usnadnění této pro
 
 Chci vytvořit Konzolovou aplikaci, která uživatelům umožňuje vytvářet, prohlížet a spravovat seznam úkolů, které potřebují dokončit.
 Uživatelé mohou označit úkoly jako dokončené, odstranit úkoly, zobrazit dokončené úkoly a nastavit čas pro dokončení úkolu
+ 
