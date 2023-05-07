@@ -2,11 +2,11 @@ package ui;
 
 import app.Task;
 import app.TaskList;
-import java.text.DateFormat;
 import java.text.ParseException;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.Scanner;
 import java.util.logging.Level;
@@ -78,6 +78,7 @@ public class ConsoleUi {
         System.out.println("5. Display ToDo list");
         System.out.println("6. Save the ToDo list to a file");
         System.out.println("7. Load the ToDo list from a file");
+        System.out.println("8. select path to Data folder");
         System.out.println("0. Exit");
         System.out.print("Enter your choice: ");
     }
@@ -102,16 +103,16 @@ public class ConsoleUi {
 
         System.out.println("set date ( format dd.mm.yyyy )");
         String string = sc.nextLine();
-        DateFormat format = new SimpleDateFormat("dd.MM.yyyy");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
         try {
-            Date date = format.parse(string);
+            LocalDate date = LocalDate.parse(string, formatter);
 
             boolean isDone = false;
 
             Task temp = new Task(cat, name, description, priority, date, isDone);
             iface.addTask(iface.getTaskList(), temp);
 
-        } catch (ParseException ex) {
+        } catch (DateTimeParseException ex) {
             Logger.getLogger(ConsoleUi.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
@@ -173,12 +174,12 @@ public class ConsoleUi {
                 case 5:
                     System.out.println("set date ( format dd.mm.yyyy )");
                     String string = sc.nextLine();
-                    DateFormat format = new SimpleDateFormat("dd.MM.yyyy");
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
                     try {
-                        Date date = format.parse(string);
+                        LocalDate date = LocalDate.parse(string, formatter);
                         iface.getTaskOnIndex(index).setDate(date);
                         break;
-                    } catch (ParseException ex) {
+                    } catch (DateTimeParseException ex) {
                         Logger.getLogger(ConsoleUi.class.getName()).log(Level.SEVERE, null, ex);
                     }
                     break;
@@ -211,7 +212,7 @@ public class ConsoleUi {
 
     private void viewTasks() {
         String a;
-        
+
         List<Task> tasks = iface.getTaskList();
         if (tasks.isEmpty()) {
             System.out.println("No tasks yet.");
@@ -219,15 +220,15 @@ public class ConsoleUi {
             System.out.println("All Tasks:");
             for (int i = 0; i < tasks.size(); i++) {
                 Task task = tasks.get(i);
-                System.out.format("   %d. %-20s [%-10s] | Description: %-45s | Priority: %-10s | Due Date: %-12s | Status: %-10s |\n",
+                System.out.format("   %d. %-20s [%-10s] | Description: %-45s | Priority: %-6s | Due Date: %-10s | Status: %-10s |\n",
                         i + 1, task.getName(), task.getCategory(), task.getDescription(), task.getPriority(),
-                        new SimpleDateFormat("dd/MM/yyyy").format(task.getDate()), task.isStatus() ? "Done" : "Not done");
+                        task.getDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")), task.isStatus() ? "Done" : "Not done");
             }
         }
         System.out.println("type anything to exit");
-         sc.nextLine();
-         sc.nextLine();
-        
+        sc.nextLine();
+        sc.nextLine();
+
     }
 
     private void saveTasksToFile() {
