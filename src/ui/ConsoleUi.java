@@ -211,25 +211,19 @@ public class ConsoleUi {
     }
 
     private void viewTasks() {
-        String a;
-
-        List<Task> tasks = iface.getTaskList();
-        if (tasks.isEmpty()) {
-            System.out.println("No tasks yet.");
-        } else {
-            System.out.println("All Tasks:");
-            for (int i = 0; i < tasks.size(); i++) {
-                Task task = tasks.get(i);
-                System.out.format("   %d. %-20s [%-10s] | Description: %-45s | Priority: %-6s | Due Date: %-10s | Status: %-10s |\n",
-                        i + 1, task.getName(), task.getCategory(), task.getDescription(), task.getPriority(),
-                        task.getDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")), task.isStatus() ? "Done" : "Not done");
-            }
-        }
-        System.out.println("type anything to exit");
-        sc.nextLine();
-        sc.nextLine();
-
+    List<Task> tasks = iface.getTaskList();
+    StringBuilder taskTable = new StringBuilder();
+    taskTable.append(String.format("%-4s %-15s %-20s %-10s %-12s %-12s %s\n", "ID", "Category", "Name", "Priority", "Date", "Done", "Description"));
+    for (int i = 0; i < tasks.size(); i++) {
+        Task t = tasks.get(i);
+        taskTable.append(String.format("%-4s %-15s %-20s %-10s %-12s %-12s %s\n", i, t.getCategory(), t.getName(), t.getPriority(), t.getDate(), t.isStatus()? "yes" : "no", t.getDescription()));
     }
+    System.out.println(taskTable.toString());
+    
+    System.out.println("press enter to go back");
+    sc.nextLine();
+    sc.nextLine();
+}
 
     private void saveTasksToFile() {
         System.out.println("Enter the file name to save tasks to:");
