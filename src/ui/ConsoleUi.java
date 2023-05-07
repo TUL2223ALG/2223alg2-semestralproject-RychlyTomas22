@@ -220,6 +220,8 @@ public class ConsoleUi {
     }
     System.out.println(taskTable.toString());
     
+    System.out.println("press enter to go back");
+    sc.nextLine();
     sc.nextLine();
 }
 
