@@ -1,25 +1,17 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package app;
 
-import java.util.Date;
+import java.time.LocalDate;
 
-/**
- *
- * @author tomir
- */
 public class Task {
     
     private String category;
     private String name;
     private String description;
     private String priority;
-    private Date date;
+    private LocalDate date;
     private boolean status;
 
-    public Task(String category, String name, String description, String priority, Date date, boolean status) {
+    public Task(String category, String name, String description, String priority, LocalDate date, boolean status) {
         this.category = category;
         this.name = name;
         this.description = description;
@@ -28,7 +20,6 @@ public class Task {
         this.status = status;
     }
 
- 
     public String getCategory() {
         return category;
     }
@@ -61,11 +52,11 @@ public class Task {
         this.priority = priority;
     }
 
-    public Date getDate() {
+    public LocalDate getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(LocalDate date) {
         this.date = date;
     }
 
@@ -76,8 +67,4 @@ public class Task {
     public void setStatus(boolean status) {
         this.status = status;
     }
-
-    
-
-    
 }
