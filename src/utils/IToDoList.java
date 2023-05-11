@@ -29,4 +29,12 @@ public interface IToDoList {
 
     public void saveToFile(String fileName);
     
+    public void rewritePath(String path);
+    
+    public String getPath();
+    
+    public void switchFormat();
+    
+    public String getFormat();
+    
 }

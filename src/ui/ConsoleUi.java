@@ -25,6 +25,8 @@ public class ConsoleUi {
 
     public void run() {
         iface = new TaskList();
+        setDataPath();
+        setDataFormat();
         displayMenu();
         boolean isRunning = true;
         while (isRunning) {
@@ -57,6 +59,14 @@ public class ConsoleUi {
                 case 7:
                     loadTasksFromFile();
                     break;
+                case 8:
+                    sc.nextLine();
+                    setDataPath();
+                    break;
+                case 9:
+                    sc.nextLine();
+                    setDataFormat();
+                    break;
                 case 0:
                     isRunning = false;
                     break;
@@ -79,6 +89,7 @@ public class ConsoleUi {
         System.out.println("6. Save the ToDo list to a file");
         System.out.println("7. Load the ToDo list from a file");
         System.out.println("8. select path to Data folder");
+        System.out.println("9. switch Data format (txt / binary)");
         System.out.println("0. Exit");
         System.out.print("Enter your choice: ");
     }
@@ -211,19 +222,19 @@ public class ConsoleUi {
     }
 
     private void viewTasks() {
-    List<Task> tasks = iface.getTaskList();
-    StringBuilder taskTable = new StringBuilder();
-    taskTable.append(String.format("%-4s %-15s %-20s %-10s %-12s %-12s %s\n", "ID", "Category", "Name", "Priority", "Date", "Done", "Description"));
-    for (int i = 0; i < tasks.size(); i++) {
-        Task t = tasks.get(i);
-        taskTable.append(String.format("%-4s %-15s %-20s %-10s %-12s %-12s %s\n", i, t.getCategory(), t.getName(), t.getPriority(), t.getDate(), t.isStatus()? "yes" : "no", t.getDescription()));
+        List<Task> tasks = iface.getTaskList();
+        StringBuilder taskTable = new StringBuilder();
+        taskTable.append(String.format("%-4s %-15s %-20s %-10s %-12s %-12s %s\n", "ID", "Category", "Name", "Priority", "Date", "Done", "Description"));
+        for (int i = 0; i < tasks.size(); i++) {
+            Task t = tasks.get(i);
+            taskTable.append(String.format("%-4s %-15s %-20s %-10s %-12s %-12s %s\n", i, t.getCategory(), t.getName(), t.getPriority(), t.getDate(), t.isStatus() ? "yes" : "no", t.getDescription()));
+        }
+        System.out.println(taskTable.toString());
+
+        System.out.println("press enter to go back");
+        sc.nextLine();
+        sc.nextLine();
     }
-    System.out.println(taskTable.toString());
-    
-    System.out.println("press enter to go back");
-    sc.nextLine();
-    sc.nextLine();
-}
 
     private void saveTasksToFile() {
         System.out.println("Enter the file name to save tasks to:");
@@ -239,6 +250,37 @@ public class ConsoleUi {
         iface.loadFromFile(fileName);
         System.out.println("Tasks loaded from file.");
 
+    }
+
+    private void setDataFormat() {
+        System.out.println("would you like to change the data format ?");
+        System.out.println("default: files will be saved in a [ filename.txt ] format");
+        System.out.println("current : " + iface.getFormat());
+        System.out.println("yes / no");
+        String option = sc.nextLine();
+        if (option.equals("yes")) {
+            iface.switchFormat();
+            System.out.println("new format is now : " + iface.getFormat());
+          
+            
+        }
+
+    }
+
+    private void setDataPath() {
+        System.out.println("would you like to change your data folder ?");
+        System.out.println("if not the folder will be saved at currently set path : " + iface.getPath() );
+        System.out.println("note that you can also change the Data folder path in the Config.txt file");
+        System.out.println("yes / no");
+        String option = sc.nextLine();
+        if (option.toLowerCase().equals("yes")) {
+            System.out.println("type in your custom path (default : ././Data)");
+            String path = sc.nextLine();
+            iface.rewritePath(path);
+            System.out.println("new path : " + path);
+            
+            
+        }
     }
 
 }
