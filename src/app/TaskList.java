@@ -2,8 +2,14 @@ package app;
 
 import data.DataStore;
 import data.Priority;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import utils.IToDoList;
 
 /**
@@ -13,6 +19,7 @@ import utils.IToDoList;
 public class TaskList implements IToDoList {
 
     private List<Task> tasks = new ArrayList<Task>();
+    private Properties config = new Properties();
 
     public TaskList() {
         tasks = new ArrayList<Task>();
@@ -25,9 +32,9 @@ public class TaskList implements IToDoList {
 
     @Override
     public Task getTaskOnIndex(int index) {
-         List<Task> temp =  List.copyOf(tasks);
-         return temp.get(index-1);
-        }
+        List<Task> temp = List.copyOf(tasks);
+        return temp.get(index - 1);
+    }
 
     @Override
     public boolean isViableCategory() {
@@ -38,7 +45,6 @@ public class TaskList implements IToDoList {
     public boolean isViablePriority() {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
-
 
     @Override
     public void loadFromFile(String fileName) {
@@ -77,7 +83,56 @@ public class TaskList implements IToDoList {
 
     @Override
     public void removeTask(List<Task> tList, int index) {
-        tList.remove(index-1);
+        tList.remove(index - 1);
+    }
+
+    @Override
+    public void rewritePath(String path) {
+
+        try {
+            config.load(new FileReader("src/utils/config.txt"));
+            config.setProperty("data_directory", path);
+            config.store(new FileOutputStream("src/utils/config.txt"), null);
+        } catch (IOException ex) {
+            Logger.getLogger(TaskList.class.getName()).log(Level.SEVERE, null, ex);
         }
+
+    }
+
+    @Override
+    public String getPath() {
+        try {
+            config.load(new FileReader("src/utils/config.txt"));
+        } catch (IOException ex) {
+            Logger.getLogger(TaskList.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return config.getProperty("data_directory");
+    }
+
+    @Override
+    public void switchFormat() {
+        try {
+            config.load(new FileReader("src/utils/config.txt"));
+            String format = config.getProperty("data_format");
+            if (format.equals("txt")) {
+                config.setProperty("data_format", "binary");
+            } else {
+                config.setProperty("data_format", "txt");
+            }
+            config.store(new FileOutputStream("src/utils/config.txt"), null);
+        } catch (IOException ex) {
+            Logger.getLogger(TaskList.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    @Override
+    public String getFormat() {
+        try {
+            config.load(new FileReader("src/utils/config.txt"));
+        } catch (IOException ex) {
+            Logger.getLogger(TaskList.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return config.getProperty("data_format");
+    }
 
 }
