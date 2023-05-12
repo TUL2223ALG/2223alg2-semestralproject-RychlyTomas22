@@ -1,3 +1,3 @@
-#Thu May 11 13:01:45 CEST 2023
-data_format=binary
+#Fri May 12 13:31:45 CEST 2023
+data_format=txt
 data_directory=././Data

@@ -1,8 +1,9 @@
 package app;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 
-public class Task {
+public class Task implements Serializable{
     
     private String category;
     private String name;

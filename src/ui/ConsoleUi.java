@@ -97,6 +97,7 @@ public class ConsoleUi {
     private void add() {
 
         System.out.println("what category would you like to assign to this task ?");
+        System.out.println("write the full name of the category");
         System.out.println(iface.getListCategories());
         sc.nextLine();
 
@@ -237,17 +238,13 @@ public class ConsoleUi {
     }
 
     private void saveTasksToFile() {
-        System.out.println("Enter the file name to save tasks to:");
-        String fileName = sc.nextLine();
-        iface.saveToFile(fileName);
+        iface.saveToFile();
         System.out.println("Tasks saved to file.");
 
     }
 
-    private void loadTasksFromFile() {
-        System.out.println("Enter the file name to load tasks from:");
-        String fileName = sc.nextLine();
-        iface.loadFromFile(fileName);
+    private void loadTasksFromFile() {;
+        iface.loadFromFile();
         System.out.println("Tasks loaded from file.");
 
     }

@@ -1,10 +1,17 @@
 package app;
 
-import data.DataStore;
 import data.Priority;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -47,18 +54,119 @@ public class TaskList implements IToDoList {
     }
 
     @Override
-    public void loadFromFile(String fileName) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    public void loadFromFile() {
+
+        if (getFormat().equals("binary")) {
+            File file = new File(getPath() + System.getProperty("file.separator") + "Tasks.dat");
+
+            if (!file.exists()) {
+                System.out.println("File does not exist: " + file.getAbsolutePath());
+                return;
+            }
+
+            tasks.removeAll(tasks);
+            try (ObjectInputStream inputStream = new ObjectInputStream(new FileInputStream(file))) {
+                tasks = (ArrayList<Task>) inputStream.readObject();
+                System.out.println("Tasks loaded: " + file.getAbsolutePath());
+            } catch (IOException | ClassNotFoundException e) {
+                System.err.println("Failed to read from file: " + e.getMessage());
+            }
+        } else if (getFormat().equals("txt")) {
+
+            String filePath = getPath() + System.getProperty("file.separator") + "Tasks.txt";
+            File file = new File(filePath);
+
+            if (!file.exists()) {
+                System.out.println("File does not exist: " + file.getAbsolutePath());
+                return;
+            }
+
+            tasks.removeAll(tasks);
+            try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    String[] taskData = line.split(",");
+                    String category = taskData[0];
+                    String name = taskData[1];
+                    String description = taskData[2];
+                    String priority = taskData[3];
+                    LocalDate date = LocalDate.parse(taskData[4]);
+                    boolean status = Boolean.parseBoolean(taskData[5]);
+
+                    Task task = new Task(category, name, description, priority, date, status);
+                    tasks.add(task);
+                }
+                System.out.println("Tasks loaded from file: " + file.getAbsolutePath());
+            } catch (IOException e) {
+                System.err.println("Failed to read from file: " + e.getMessage());
+            }
+        } else {
+            System.out.println("invalid format please switch to a different one");
+        }
+
     }
 
     @Override
-    public void saveToFile(String fileName) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    public void saveToFile() {
+
+        if (getFormat().equals("binary")) {
+            //save as binary
+            File file = new File(getPath() + System.getProperty("file.separator") + "Tasks.dat");
+            try (ObjectOutputStream outputStream = new ObjectOutputStream(new FileOutputStream(file))) {
+                outputStream.writeObject(tasks);
+                System.out.println("Tasks saved : " + file.getAbsolutePath());
+            } catch (IOException e) {
+                System.err.println("Failed to write tasks to file: " + e.getMessage());
+            }
+
+        } else if (getFormat().equals("txt")) {
+            // save as txt
+            File file = new File(getPath() + System.getProperty("file.separator") + "Tasks.txt");
+            try {
+                if (file.createNewFile()) {
+                    System.out.println("New file created: " + file.getAbsolutePath());
+                } else {
+                    System.out.println("File already exists: " + file.getAbsolutePath());
+                }
+            } catch (IOException ex) {
+                System.err.println("Failed to create file: " + ex.getMessage());
+                return;
+            }
+
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
+                for (Task task : tasks) {
+                    String taskString = task.getCategory() + "," + task.getName() + "," + task.getDescription() + "," + task.getPriority() + "," + task.getDate() + "," + task.isStatus();
+                    writer.write(taskString);
+                    writer.newLine();
+                }
+                System.out.println("Tasks saved: " + file.getAbsolutePath());
+            } catch (IOException e) {
+                System.err.println("Failed to write tasks to file: " + e.getMessage());
+            }
+        } else {
+            System.out.println("invalid format please switch to a different one");
+        }
     }
 
     @Override
-    public String[] getListCategories() {
-        return DataStore.loadCat();
+    public String getListCategories() {
+        File file = new File("src/utils/Categories.txt");
+        if (!file.exists()) {
+        System.out.println("File does not exist: " + file.getAbsolutePath());
+        return "";
+    }
+
+    try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+        String line;
+        ArrayList<String> words = new ArrayList<>();
+        while ((line = reader.readLine()) != null) {
+            words.add(line);
+        }
+        return String.join(" | ", words.toArray(new String[0]));
+    } catch (IOException e) {
+        System.err.println("Failed to read file: " + e.getMessage());
+        return "";
+    }
     }
 
     @Override
@@ -134,5 +242,4 @@ public class TaskList implements IToDoList {
         }
         return config.getProperty("data_format");
     }
-
 }

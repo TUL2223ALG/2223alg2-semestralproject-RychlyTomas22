@@ -1,6 +1,7 @@
 package utils;
 
 import app.Task;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -13,7 +14,7 @@ public interface IToDoList {
     
     public List getTaskList();
     
-    public String[] getListCategories(); // ToDo get from file
+    public  String getListCategories(); // ToDo get from file
     
     public String getListPriority();
     
@@ -25,9 +26,9 @@ public interface IToDoList {
     
     public void removeTask(List<Task> tList, int index);
 
-    public void loadFromFile(String fileName);
+    public void loadFromFile();
 
-    public void saveToFile(String fileName);
+    public void saveToFile();
     
     public void rewritePath(String path);
     
