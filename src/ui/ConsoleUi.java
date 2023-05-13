@@ -1,5 +1,8 @@
 package ui;
 
+import app.CategoryComparator;
+import app.CompletionComparator;
+import app.PriorityComparator;
 import app.Task;
 import app.TaskList;
 import java.text.ParseException;
@@ -7,6 +10,7 @@ import java.text.ParseException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.Collections;
 import java.util.List;
 import java.util.Scanner;
 import java.util.logging.Level;
@@ -225,6 +229,34 @@ public class ConsoleUi {
     private void viewTasks() {
         List<Task> tasks = iface.getTaskList();
         StringBuilder taskTable = new StringBuilder();
+        Collections.sort(tasks);
+        taskTable.append(String.format("%-4s %-15s %-20s %-10s %-12s %-12s %s\n", "ID", "Category", "Name", "Priority", "Date", "Done", "Description"));
+        for (int i = 0; i < tasks.size(); i++) {
+            Task t = tasks.get(i);
+            taskTable.append(String.format("%-4s %-15s %-20s %-10s %-12s %-12s %s\n", i, t.getCategory(), t.getName(), t.getPriority(), t.getDate(), t.isStatus() ? "yes" : "no", t.getDescription()));
+        }
+        System.out.println(taskTable.toString());
+        
+        System.out.println("Sort tasks by:\n1. Priority\n2. Category\npress enter to go back");
+        sc.nextLine();
+        String choice = sc.nextLine();
+
+        if (!choice.equals("")) {
+            
+       
+        switch (choice) {
+            case "1":
+                Collections.sort(tasks, new CompletionComparator(new PriorityComparator()));
+                break;
+            case "2":
+                Collections.sort(tasks, new CompletionComparator(new CategoryComparator()));
+                break;
+            default:
+                System.out.println("Invalid choice.");
+                break;
+        }
+
+        taskTable = new StringBuilder();
         taskTable.append(String.format("%-4s %-15s %-20s %-10s %-12s %-12s %s\n", "ID", "Category", "Name", "Priority", "Date", "Done", "Description"));
         for (int i = 0; i < tasks.size(); i++) {
             Task t = tasks.get(i);
@@ -234,7 +266,7 @@ public class ConsoleUi {
 
         System.out.println("press enter to go back");
         sc.nextLine();
-        sc.nextLine();
+         }
     }
 
     private void saveTasksToFile() {
@@ -258,15 +290,14 @@ public class ConsoleUi {
         if (option.equals("yes")) {
             iface.switchFormat();
             System.out.println("new format is now : " + iface.getFormat());
-          
-            
+
         }
 
     }
 
     private void setDataPath() {
         System.out.println("would you like to change your data folder ?");
-        System.out.println("if not the folder will be saved at currently set path : " + iface.getPath() );
+        System.out.println("if not the folder will be saved at currently set path : " + iface.getPath());
         System.out.println("note that you can also change the Data folder path in the Config.txt file");
         System.out.println("yes / no");
         String option = sc.nextLine();
@@ -275,8 +306,7 @@ public class ConsoleUi {
             String path = sc.nextLine();
             iface.rewritePath(path);
             System.out.println("new path : " + path);
-            
-            
+
         }
     }
 
