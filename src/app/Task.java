@@ -3,7 +3,7 @@ package app;
 import java.io.Serializable;
 import java.time.LocalDate;
 
-public class Task implements Serializable{
+public class Task implements Serializable, Comparable<Task>{
     
     private String category;
     private String name;
@@ -67,5 +67,10 @@ public class Task implements Serializable{
 
     public void setStatus(boolean status) {
         this.status = status;
+    }
+
+    @Override
+    public int compareTo(Task o) {
+    return this.date.compareTo(o.getDate());    
     }
 }
