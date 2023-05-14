@@ -148,23 +148,32 @@ public class ConsoleUi {
 
     private void updateTask() throws ParseException {
         System.out.println("select task to edit");
-        System.out.println(iface.getTaskList());
+        List<Task> tasks = iface.getTaskList();
+        StringBuilder taskTable = new StringBuilder();
+        Collections.sort(tasks);
+        taskTable.append(String.format("%-4s %-15s %-20s %-10s %-12s %-12s %s\n", "ID", "Category", "Name", "Priority", "Date", "Done", "Description"));
+        for (int i = 0; i < tasks.size(); i++) {
+            Task t = tasks.get(i);
+            taskTable.append(String.format("%-4s %-15s %-20s %-10s %-12s %-12s %s\n", i + 1, t.getCategory(), t.getName(), t.getPriority(), t.getDate(), t.isStatus() ? "yes" : "no", t.getDescription()));
+        }
+        System.out.println(taskTable.toString());
         int index = sc.nextInt();
 
-        System.out.println("what would you like to change ?");
-
-        System.out.println("1. category");
-        System.out.println("2. name");
-        System.out.println("3. description");
-        System.out.println("4. priority");
-        System.out.println("5. date");
-        System.out.println("6. mark as finished/unfinished");
-        System.out.println("0. done");
-
-        System.out.println("select an option :");
-        int selection = sc.nextInt();
         boolean isSelecting = true;
         while (isSelecting) {
+            System.out.println("what would you like to change ?");
+
+            System.out.println("1. category");
+            System.out.println("2. name");
+            System.out.println("3. description");
+            System.out.println("4. priority");
+            System.out.println("5. date");
+            System.out.println("6. mark as finished/unfinished");
+            System.out.println("0. done");
+
+            System.out.println("select an option :");
+            int selection = sc.nextInt();
+            sc.nextLine();
             switch (selection) {
                 case 1:
                     System.out.println("write (select) new category");
@@ -185,7 +194,7 @@ public class ConsoleUi {
                 case 4:
                     System.out.println("write (select) new priority");
                     String newPri = sc.nextLine();
-                    iface.getTaskOnIndex(index).setPriority(newPri);
+                    iface.getTaskOnIndex(index).setPriority(newPri.toUpperCase());
                     break;
                 case 5:
                     System.out.println("set date ( format dd.mm.yyyy )");
@@ -233,40 +242,39 @@ public class ConsoleUi {
         taskTable.append(String.format("%-4s %-15s %-20s %-10s %-12s %-12s %s\n", "ID", "Category", "Name", "Priority", "Date", "Done", "Description"));
         for (int i = 0; i < tasks.size(); i++) {
             Task t = tasks.get(i);
-            taskTable.append(String.format("%-4s %-15s %-20s %-10s %-12s %-12s %s\n", i, t.getCategory(), t.getName(), t.getPriority(), t.getDate(), t.isStatus() ? "yes" : "no", t.getDescription()));
+            taskTable.append(String.format("%-4s %-15s %-20s %-10s %-12s %-12s %s\n", i + 1, t.getCategory(), t.getName(), t.getPriority(), t.getDate(), t.isStatus() ? "yes" : "no", t.getDescription()));
         }
         System.out.println(taskTable.toString());
-        
+
         System.out.println("Sort tasks by:\n1. Priority\n2. Category\npress enter to go back");
         sc.nextLine();
         String choice = sc.nextLine();
 
         if (!choice.equals("")) {
-            
-       
-        switch (choice) {
-            case "1":
-                Collections.sort(tasks, new CompletionComparator(new PriorityComparator()));
-                break;
-            case "2":
-                Collections.sort(tasks, new CompletionComparator(new CategoryComparator()));
-                break;
-            default:
-                System.out.println("Invalid choice.");
-                break;
-        }
 
-        taskTable = new StringBuilder();
-        taskTable.append(String.format("%-4s %-15s %-20s %-10s %-12s %-12s %s\n", "ID", "Category", "Name", "Priority", "Date", "Done", "Description"));
-        for (int i = 0; i < tasks.size(); i++) {
-            Task t = tasks.get(i);
-            taskTable.append(String.format("%-4s %-15s %-20s %-10s %-12s %-12s %s\n", i, t.getCategory(), t.getName(), t.getPriority(), t.getDate(), t.isStatus() ? "yes" : "no", t.getDescription()));
-        }
-        System.out.println(taskTable.toString());
+            switch (choice) {
+                case "1":
+                    Collections.sort(tasks, new CompletionComparator(new PriorityComparator()));
+                    break;
+                case "2":
+                    Collections.sort(tasks, new CompletionComparator(new CategoryComparator()));
+                    break;
+                default:
+                    System.out.println("Invalid choice.");
+                    break;
+            }
 
-        System.out.println("press enter to go back");
-        sc.nextLine();
-         }
+            taskTable = new StringBuilder();
+            taskTable.append(String.format("%-4s %-15s %-20s %-10s %-12s %-12s %s\n", "ID", "Category", "Name", "Priority", "Date", "Done", "Description"));
+            for (int i = 0; i < tasks.size(); i++) {
+                Task t = tasks.get(i);
+                taskTable.append(String.format("%-4s %-15s %-20s %-10s %-12s %-12s %s\n", i, t.getCategory(), t.getName(), t.getPriority(), t.getDate(), t.isStatus() ? "yes" : "no", t.getDescription()));
+            }
+            System.out.println(taskTable.toString());
+
+            System.out.println("press enter to go back");
+            sc.nextLine();
+        }
     }
 
     private void saveTasksToFile() {

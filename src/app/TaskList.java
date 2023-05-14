@@ -11,12 +11,14 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.apache.commons.lang3.SerializationUtils;
 import utils.IToDoList;
 
 /**
@@ -66,9 +68,9 @@ public class TaskList implements IToDoList {
 
             tasks.removeAll(tasks);
             try (ObjectInputStream inputStream = new ObjectInputStream(new FileInputStream(file))) {
-                tasks = (ArrayList<Task>) inputStream.readObject();
+                tasks = (ArrayList<Task>) SerializationUtils.deserialize(inputStream);
                 System.out.println("Tasks loaded: " + file.getAbsolutePath());
-            } catch (IOException | ClassNotFoundException e) {
+            } catch (IOException e) {
                 System.err.println("Failed to read from file: " + e.getMessage());
             }
         } else if (getFormat().equals("txt")) {
@@ -85,7 +87,7 @@ public class TaskList implements IToDoList {
             try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
                 String line;
                 while ((line = reader.readLine()) != null) {
-                    String[] taskData = line.split(",");
+                    String[] taskData = line.split(" ; ");
                     String category = taskData[0];
                     String name = taskData[1];
                     String description = taskData[2];
@@ -113,7 +115,7 @@ public class TaskList implements IToDoList {
             //save as binary
             File file = new File(getPath() + System.getProperty("file.separator") + "Tasks.dat");
             try (ObjectOutputStream outputStream = new ObjectOutputStream(new FileOutputStream(file))) {
-                outputStream.writeObject(tasks);
+                SerializationUtils.serialize((Serializable) tasks, outputStream);
                 System.out.println("Tasks saved : " + file.getAbsolutePath());
             } catch (IOException e) {
                 System.err.println("Failed to write tasks to file: " + e.getMessage());
@@ -135,7 +137,7 @@ public class TaskList implements IToDoList {
 
             try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
                 for (Task task : tasks) {
-                    String taskString = task.getCategory() + "," + task.getName() + "," + task.getDescription() + "," + task.getPriority() + "," + task.getDate() + "," + task.isStatus();
+                    String taskString = task.getCategory() + " ; " + task.getName() + " ; " + task.getDescription() + " ; " + task.getPriority() + " ; " + task.getDate() + " ; " + task.isStatus();
                     writer.write(taskString);
                     writer.newLine();
                 }
