@@ -9,14 +9,14 @@ import java.util.Comparator;
 public class CompletionComparator implements Comparator<Task> {
 
     private Comparator<Task> secondaryComparator;
-     private Comparable<Task> secondaryComparable;
+    private Comparable<Task> secondaryComparable;
 
     public CompletionComparator(Comparator<Task> secondaryComparator) {
         this.secondaryComparator = secondaryComparator;
     }
-    
-      public CompletionComparator(Comparable<Task> secondaryComparator) {
-        this.secondaryComparable = secondaryComparator;
+
+    public CompletionComparator(Comparable<Task> secondaryComparable) {
+        this.secondaryComparable = secondaryComparable;
     }
 
     @Override
@@ -25,6 +25,8 @@ public class CompletionComparator implements Comparator<Task> {
             return 1;
         } else if (!o1.isStatus() && o2.isStatus()) {
             return -1;
+        } else if (secondaryComparable != null) {
+            return secondaryComparable.compareTo(o1);
         } else {
             return secondaryComparator.compare(o1, o2);
         }

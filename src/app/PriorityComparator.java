@@ -9,24 +9,25 @@ import java.util.Comparator;
 public class PriorityComparator implements Comparator<Task> {
 
     @Override
-    public int compare(Task o1, Task o2) {
-        String Pri1 = o1.getPriority();
-        String Pri2 = o2.getPriority();
+    public int compare(Task t1, Task t2) {
+        String priority1 = t1.getPriority();
+        String priority2 = t2.getPriority();
+        
+        return Integer.compare(getLevel(priority1), getLevel(priority2));
+    }
 
-        if (Pri1.equals(Pri2)) {
-            return o1.getDate().compareTo(o2.getDate());
-        } else {
-            if (Pri1.equals("High")) {
-                return -1;
-            } else if (Pri2.equals("High")) {
+    private int getLevel(String priority) {
+        switch (priority) {
+            case "NONE":
+                return 0;
+            case "LOW":
                 return 1;
-            } else if (Pri1.equals("Medium")) {
-                return -1;
-            } else if (Pri2.equals("Medium")) {
-                return 1;
-            } else {
-                return -1;
-            }
+            case "MEDIUM":
+                return 2;
+            case "HIGH":
+                return 3;
+            default:
+                throw new IllegalArgumentException("Invalid priority: " + priority);
         }
     }
 }

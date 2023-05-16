@@ -1,0 +1,20 @@
+work ; project ; needs to be finished ASAP ; HIGH ; 2023-06-08 ; true
+personal ; exercise ; go for a run ; MEDIUM ; 2023-06-10 ; false
+shopping ; groceries ; buy milk, eggs, and bread ; LOW ; 2023-06-12 ; true
+work ; meeting ; attend team meeting ; MEDIUM ; 2023-06-15 ; false
+personal ; hobby ; paint a picture ; LOW ; 2023-06-18 ; false
+school ; presentation ; prepare presentation on VR ; HIGH ; 2023-06-20 ; true
+shopping ; clothes ; buy new shoes and jeans ; MEDIUM ; 2023-06-22 ; false
+personal ; appointment ; dentist appointment ; HIGH ; 2023-06-25 ; false
+work ; training ; attend professional development training ; MEDIUM ; 2023-06-28 ; false
+shopping ; electronics ; buy a new smartphone ; HIGH ; 2023-06-30 ; false
+work ; deadline ; submit project proposal ; HIGH ; 2023-07-03 ; false
+personal ; vacation ; plan summer vacation ; MEDIUM ; 2023-07-06 ; false
+shopping ; gifts ; buy birthday presents ; LOW ; 2023-07-09 ; false
+work ; presentation ; prepare slide deck for client presentation ; HIGH ; 2023-07-12 ; true
+personal ; party ; organize a surprise party ; MEDIUM ; 2023-07-15 ; false
+shopping ; home decor ; buy new curtains and rugs ; LOW ; 2023-07-18 ; false
+work ; training ; attend leadership workshop ; MEDIUM ; 2023-07-21 ; false
+personal ; cooking ; try out a new recipe ; LOW ; 2023-07-24 ; false
+shopping ; books ; purchase new novels ; MEDIUM ; 2023-07-27 ; false
+work ; meeting ; schedule one-on-one meeting with manager ; MEDIUM ; 2023-07-30 ; false

@@ -28,7 +28,7 @@ import utils.IToDoList;
 public class TaskList implements IToDoList {
 
     private List<Task> tasks = new ArrayList<Task>();
-    private Properties config = new Properties();
+    private final Properties config = new Properties();
 
     public TaskList() {
         tasks = new ArrayList<Task>();
@@ -46,13 +46,43 @@ public class TaskList implements IToDoList {
     }
 
     @Override
-    public boolean isViableCategory() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    public boolean isViableCategory(String input) {
+        File file = new File("src/utils/Categories.txt");
+        if (!file.exists()) {
+            System.out.println("File does not exist: " + file.getAbsolutePath());
+        }
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+            String line;
+            ArrayList<String> words = new ArrayList<>();
+            while ((line = reader.readLine()) != null) {
+                words.add(line);
+            }
+
+            for (String category : words) {
+                if (category.equalsIgnoreCase(input)) {
+                    return true;
+                }
+            }
+
+            return false;
+
+        } catch (IOException ex) {
+            Logger.getLogger(TaskList.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return false;
+
     }
 
     @Override
-    public boolean isViablePriority() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    public boolean isViablePriority(String input) {
+        try {
+        Priority.valueOf(input.toUpperCase());
+        return true;
+    } catch (IllegalArgumentException e) {
+        return false;
+    }
+    
     }
 
     @Override
@@ -131,7 +161,8 @@ public class TaskList implements IToDoList {
                     System.out.println("File already exists: " + file.getAbsolutePath());
                 }
             } catch (IOException ex) {
-                System.err.println("Failed to create file: " + ex.getMessage());
+                System.out.println("Failed to create file: " + ex.getMessage());
+
                 return;
             }
 
@@ -154,21 +185,21 @@ public class TaskList implements IToDoList {
     public String getListCategories() {
         File file = new File("src/utils/Categories.txt");
         if (!file.exists()) {
-        System.out.println("File does not exist: " + file.getAbsolutePath());
-        return "";
-    }
-
-    try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
-        String line;
-        ArrayList<String> words = new ArrayList<>();
-        while ((line = reader.readLine()) != null) {
-            words.add(line);
+            System.out.println("File does not exist: " + file.getAbsolutePath());
+            return "";
         }
-        return String.join(" | ", words.toArray(new String[0]));
-    } catch (IOException e) {
-        System.err.println("Failed to read file: " + e.getMessage());
-        return "";
-    }
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+            String line;
+            ArrayList<String> words = new ArrayList<>();
+            while ((line = reader.readLine()) != null) {
+                words.add(line);
+            }
+            return String.join(" | ", words.toArray(new String[0]));
+        } catch (IOException e) {
+            System.err.println("Failed to read file: " + e.getMessage());
+            return "";
+        }
     }
 
     @Override
@@ -201,8 +232,14 @@ public class TaskList implements IToDoList {
 
         try {
             config.load(new FileReader("src/utils/config.txt"));
-            config.setProperty("data_directory", path);
-            config.store(new FileOutputStream("src/utils/config.txt"), null);
+            File file = new File(path);
+            if (file.exists()) {
+                config.setProperty("data_directory", path);
+                config.store(new FileOutputStream("src/utils/config.txt"), null);
+                System.out.println("new path : " + path);
+            } else {
+                System.out.println("file does not exist and path remains unchanged");
+            }
         } catch (IOException ex) {
             Logger.getLogger(TaskList.class.getName()).log(Level.SEVERE, null, ex);
         }
