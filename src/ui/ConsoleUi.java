@@ -136,12 +136,14 @@ public class ConsoleUi {
         System.out.println("Enter the task index to remove:");
         System.out.println(taskSelectonView());
         int index = getInputAsInt(sc);
-        if (iface.getTaskOnIndex(index) != null) {
+        if (index > 0 && index <= iface.getTaskList().size()) {
+        if ( iface.getTaskOnIndex(index) != null  ) {
             iface.removeTask(iface.getTaskList(), index);
             System.out.println("Task removed.");
         } else {
             System.out.println("Invalid index try again.");
         }
+        }else {System.out.println("invalid index");}
     }
 
     private void updateTask() throws ParseException {
@@ -149,10 +151,10 @@ public class ConsoleUi {
         if (!tasks.isEmpty()) {
             Collections.sort(tasks, new CompletionComparator(new PriorityComparator()));
             System.out.println(taskSelectonView());
-            System.out.println("select task to edit or press 1 to exit");
+            System.out.println("select task to edit or press enter 0 to exit");
             int index = getInputAsInt(sc);
 
-            if (index != 1) {
+            if (index != 0 && index <= iface.getTaskList().size() && index > -1) {
                 boolean isSelecting = true;
                 while (isSelecting) {
                     System.out.println("what would you like to change ?");
@@ -218,7 +220,9 @@ public class ConsoleUi {
 
                     }
                 }
-            }
+            }else if(index ==0 ){
+                System.out.println("exiting");
+            }else {System.out.println("not an option");}
         } else {
             System.out.println("there are no tasks to be edited yet");
         }
@@ -229,8 +233,9 @@ public class ConsoleUi {
         System.out.println("select witch task woul you like to mark as done ?");
         System.out.println(taskSelectonView());
         int index = getInputAsInt(sc);
-        iface.getTaskOnIndex(index).setStatus(true);
-
+        if (index > 0 && index <= iface.getTaskList().size()) {
+            iface.getTaskOnIndex(index).setStatus(true);
+        }else {System.out.println("invalid index");}
     }
 
     private void viewTasks() {
@@ -304,10 +309,10 @@ public class ConsoleUi {
             String input = scanner.nextLine();
             if (input.matches("\\d+")) {
                 int num = Integer.parseInt(input);
-                if (num > 0) {
+                if (num >= 0) {
                     return num;
                 } else {
-                    System.out.println("Input must be greater than zero. Please enter a valid value:");
+                    System.out.println("Input must be greater or equal to zero. Please enter a valid value:");
                 }
             } else {
                 System.out.println("Input must be a number. Please enter a valid value:");
