@@ -1,7 +1,6 @@
 package utils;
 
 import app.Task;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -14,15 +13,15 @@ public interface IToDoList {
     
     public List getTaskList();
     
-    public  String getListCategories(); // ToDo get from file
+    public  String getListCategories();
     
     public String getListPriority();
     
     public Task getTaskOnIndex(int index);
     
-    public boolean isViableCategory();
+    public boolean isViableCategory(String input);
     
-    public boolean isViablePriority();
+    public boolean isViablePriority(String input);
     
     public void removeTask(List<Task> tList, int index);
 
