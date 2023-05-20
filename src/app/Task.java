@@ -1,8 +1,12 @@
 package app;
-
 import java.io.Serializable;
 import java.time.LocalDate;
 
+/**
+ * The Task class represents a task with its variables.
+ * It implements the Serializable interface to support object serialization
+ * and the Comparable interface to enable sorting of tasks.
+ */
 public class Task implements Serializable, Comparable<Task>{
     
     private String category;
