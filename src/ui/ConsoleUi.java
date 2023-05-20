@@ -18,6 +18,13 @@ import java.util.logging.Logger;
 import utils.IToDoList;
 
 /**
+ * The ConsoleUi class handles the user interface and interactions for the to-do
+ * list app. It provides a command-line interface for users to add, remove,
+ * update, save, load, and view tasks. The class uses an instance of the
+ * IToDoList interface to perform the necessary operations on the task list.
+ *
+ * Usage: Create an instance of ConsoleUi and call the run() method to start the
+ * application.
  *
  * @author tomir
  */
@@ -27,6 +34,13 @@ public class ConsoleUi {
 
     private IToDoList iface;
 
+    /**
+     * Runs the to-do list application. Initializes the task list, sets data
+     * path and format, and displays the main menu. Handles user input and
+     * performs the required operations until the user decides to exit.
+     *
+     * @throws ParseException if there is an error parsing the input
+     */
     public void run() throws ParseException {
         iface = new TaskList();
         setDataPath();
@@ -75,6 +89,9 @@ public class ConsoleUi {
         }
     }
 
+    /**
+     * Displays the main menu options for the to-do list application.
+     */
     private static void displayMenu() {
         System.out.println(" ***** ToDoList App ***** ");
         System.out.println("1. Add an item");
@@ -90,6 +107,13 @@ public class ConsoleUi {
         System.out.print("Enter your choice: ");
     }
 
+    /**
+     * Adds a new task to the to-do list. Prompts the user to enter the
+     * category, name, description, priority, and date for the task. If the
+     * input is valid, a new Task object is created and added to the task list.
+     *
+     * @throws ParseException if there is an error parsing the input
+     */
     private void add() {
 
         System.out.println("what category would you like to assign to this task ?");
@@ -131,21 +155,35 @@ public class ConsoleUi {
 
     }
 
+    /**
+     * Removes a task from the to-do list. Prompts the user to enter the index
+     * of the task to be removed. If the index is valid, the corresponding task
+     * is removed from the task list.
+     */
     private void removeTask() {
 
         System.out.println("Enter the task index to remove:");
         System.out.println(taskSelectonView());
         int index = getInputAsInt(sc);
         if (index > 0 && index <= iface.getTaskList().size()) {
-        if ( iface.getTaskOnIndex(index) != null  ) {
-            iface.removeTask(iface.getTaskList(), index);
-            System.out.println("Task removed.");
+            if (iface.getTaskOnIndex(index) != null) {
+                iface.removeTask(iface.getTaskList(), index);
+                System.out.println("Task removed.");
+            } else {
+                System.out.println("Invalid index try again.");
+            }
         } else {
-            System.out.println("Invalid index try again.");
+            System.out.println("invalid index");
         }
-        }else {System.out.println("invalid index");}
     }
 
+    /**
+     * Updates an existing task in the to-do list. Prompts the user to select a
+     * task to edit and choose the field to update. Provides options to change
+     * the category, name, description, priority, date, and status of the task.
+     *
+     * @throws ParseException if there is an error parsing the input
+     */
     private void updateTask() throws ParseException {
         List<Task> tasks = iface.getTaskList();
         if (!tasks.isEmpty()) {
@@ -220,24 +258,35 @@ public class ConsoleUi {
 
                     }
                 }
-            }else if(index ==0 ){
+            } else if (index == 0) {
                 System.out.println("exiting");
-            }else {System.out.println("not an option");}
+            } else {
+                System.out.println("not an option");
+            }
         } else {
             System.out.println("there are no tasks to be edited yet");
         }
 
     }
 
+    /**
+     * Prompts the user to select a task and marks it as done.
+     */
     private void TasksDone() {
         System.out.println("select witch task woul you like to mark as done ?");
         System.out.println(taskSelectonView());
         int index = getInputAsInt(sc);
         if (index > 0 && index <= iface.getTaskList().size()) {
             iface.getTaskOnIndex(index).setStatus(true);
-        }else {System.out.println("invalid index");}
+        } else {
+            System.out.println("invalid index");
+        }
     }
 
+    /**
+     * Displays the to-do list. Allows the user to sort the tasks by priority or
+     * category.
+     */
     private void viewTasks() {
         List<Task> tasks = iface.getTaskList();
         System.out.println(taskSelectonView());
@@ -266,18 +315,28 @@ public class ConsoleUi {
         }
     }
 
+    /**
+     * Saves the to-do list to a file.
+     */
     private void saveTasksToFile() {
         iface.saveToFile();
         System.out.println("Tasks saved to file.");
 
     }
 
+    /**
+     * Loads the to-do list from a file.
+     */
     private void loadTasksFromFile() {
         iface.loadFromFile();
         System.out.println("Tasks loaded from file.");
 
     }
 
+    /**
+     * Sets the data format for the task list. Prompts the user to choose
+     * between text format or binary format for saving and loading data.
+     */
     private void setDataFormat() {
         System.out.println("would you like to change the data format ?");
         System.out.println("current : " + iface.getFormat());
@@ -290,6 +349,10 @@ public class ConsoleUi {
 
     }
 
+    /**
+     * Sets the data path for the task list. Prompts the user to enter the path
+     * where the data files will be saved and loaded.
+     */
     private void setDataPath() {
         System.out.println("would you like to change your data folder ?");
         System.out.println("if not the folder will be saved at currently set path : " + iface.getPath());
@@ -304,6 +367,12 @@ public class ConsoleUi {
         }
     }
 
+    /**
+     * Parses user input as an positive whole number (incl. 0)
+     *
+     * @param sc the Scanner object used to read user input
+     * @return the parsed integer
+     */
     private int getInputAsInt(Scanner scanner) {
         while (true) {
             String input = scanner.nextLine();
@@ -320,6 +389,14 @@ public class ConsoleUi {
         }
     }
 
+    /**
+     * Prompts the user for a yes or no input and returns the input as a string.
+     * Keeps prompting the user until a valid input is provided ('yes',
+     * 'y','no', 'n').
+     *
+     * @param scanner the Scanner object used to read user input
+     * @return the user's yes or no input as a lowercase string
+     */
     private String getInputYesNo(Scanner scanner) {
         while (true) {
             String input = scanner.nextLine().toLowerCase();
@@ -331,6 +408,12 @@ public class ConsoleUi {
         }
     }
 
+    /**
+     * Generates a string representation of the tasks in the task list with
+     * their corresponding indices.
+     *
+     * @return the task selection view as a string
+     */
     private String taskSelectonView() {
         List<Task> tasks = iface.getTaskList();
         StringBuilder taskTable = new StringBuilder();
