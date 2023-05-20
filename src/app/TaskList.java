@@ -22,29 +22,51 @@ import org.apache.commons.lang3.SerializationUtils;
 import utils.IToDoList;
 
 /**
- *
- * @author tomir
+ * The TaskList class represents a collection of tasks and provides methods for
+ * managing the task list. It implements the IToDoList interface.
  */
 public class TaskList implements IToDoList {
 
     private List<Task> tasks = new ArrayList<Task>();
     private final Properties config = new Properties();
 
+    /**
+     * Constructs a new TaskList object. Initializes the tasks list and loads
+     * configuration properties.
+     */
     public TaskList() {
         tasks = new ArrayList<Task>();
     }
 
+    /**
+     * Retrieves the task list.
+     *
+     * @return the list of tasks
+     */
     @Override
     public List getTaskList() {
         return tasks;
     }
 
+    /**
+     * Retrieves the task on specific index in the task list.
+     *
+     * @param index the index of the task
+     * @return the task at the specified index
+     */
     @Override
     public Task getTaskOnIndex(int index) {
         List<Task> temp = List.copyOf(tasks);
         return temp.get(index - 1);
     }
 
+    /**
+     * Checks if the specified input matches one of the saved categories.
+     *
+     * @param input the input to be checked
+     * @return true if the input matches category saved in Categories.txt file,
+     * false otherwise
+     */
     @Override
     public boolean isViableCategory(String input) {
         File file = new File("src/utils/Categories.txt");
@@ -74,17 +96,27 @@ public class TaskList implements IToDoList {
 
     }
 
+    /**
+     * Checks if the specified input matches priority inside Priority enum
+     * class.
+     *
+     * @param input the input to be checked
+     * @return true if the input is a viable priority, false otherwise
+     */
     @Override
     public boolean isViablePriority(String input) {
         try {
-        Priority.valueOf(input.toUpperCase());
-        return true;
-    } catch (IllegalArgumentException e) {
-        return false;
-    }
-    
+            Priority.valueOf(input.toUpperCase());
+            return true;
+        } catch (IllegalArgumentException e) {
+            return false;
+        }
+
     }
 
+    /**
+     * Loads tasks from a file based on the configured data format.
+     */
     @Override
     public void loadFromFile() {
 
@@ -138,6 +170,9 @@ public class TaskList implements IToDoList {
 
     }
 
+    /**
+     * Saves tasks to a file based on the configured data format.
+     */
     @Override
     public void saveToFile() {
 
@@ -181,6 +216,11 @@ public class TaskList implements IToDoList {
         }
     }
 
+    /**
+     * Retrieves the list of categories as String.
+     *
+     * @return the list of categories in String format
+     */
     @Override
     public String getListCategories() {
         File file = new File("src/utils/Categories.txt");
@@ -202,6 +242,11 @@ public class TaskList implements IToDoList {
         }
     }
 
+    /**
+     * Retrieves the list of priorities as String.
+     *
+     * @return the list of priorities in String format
+     */
     @Override
     public String getListPriority() {
 
@@ -217,16 +262,33 @@ public class TaskList implements IToDoList {
 
     }
 
+    /**
+     * Adds a task to the task list.
+     *
+     * @param tList the task list
+     * @param task the task to be added
+     */
     @Override
     public void addTask(List<Task> tList, Task task) {
         tList.add(task);
     }
 
+    /**
+     * Removes a task from the task list.
+     *
+     * @param tList the task list
+     * @param index the index of the task to be removed
+     */
     @Override
     public void removeTask(List<Task> tList, int index) {
         tList.remove(index - 1);
     }
 
+    /**
+     * Rewrites the data path in the configuration file.
+     *
+     * @param path the new data path
+     */
     @Override
     public void rewritePath(String path) {
 
@@ -246,6 +308,11 @@ public class TaskList implements IToDoList {
 
     }
 
+    /**
+     * Retrieves the data path from the configuration file.
+     *
+     * @return the data path
+     */
     @Override
     public String getPath() {
         try {
@@ -256,6 +323,9 @@ public class TaskList implements IToDoList {
         return config.getProperty("data_directory");
     }
 
+    /**
+     * Switches the data format between binary and text.
+     */
     @Override
     public void switchFormat() {
         try {
@@ -272,6 +342,11 @@ public class TaskList implements IToDoList {
         }
     }
 
+    /**
+     * Retrieves the current data format from the configuration file.
+     *
+     * @return the current data format
+     */
     @Override
     public String getFormat() {
         try {
