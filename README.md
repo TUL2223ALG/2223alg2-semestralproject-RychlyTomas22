@@ -27,9 +27,9 @@ Uživatelé mohou označit úkoly jako dokončené, odstranit úkoly, zobrazit d
 ### Popis struktury vstupních a výstupních souborů
 
 **textové soubory:**
-všechny informace v souborech jsou odděleny pomocí : '' ; "
-informace jsou uloženy jako string a jsou pársovány pro použití v programu
-udaje ukládané (v přesném pořadí) do souborů jsou :
+všechny informace v souborech jsou odděleny pomocí : '' ; ".
+Informace jsou uloženy jako string a jsou pársovány pro použití v programu.
+Údaje ukládané (v přesném pořadí) do souborů jsou :
 * nazev ulohy
 * kategorie
 * popis ulohy
@@ -42,97 +42,7 @@ ukládá list objektů task
 
 ### class diagram
 
-classDiagram
-    class TodoApp {
-        <<Singleton>>
-        - scanner: Scanner
-        - iface: TodoListInterface
-        --
-        + main(args: String[]): void
-        + getMenuChoice(): int
-        + getInputString(scanner: Scanner): String
-        + getInputInt(scanner: Scanner): int
-        + getInputYesNo(scanner: Scanner): String
-        + taskSelectionView(): String
-    }
-
-    class UI {
-        --
-        + displayMessage(message: String): void
-        + displayTaskList(taskList: List<Task>): void
-        + displayError(errorMessage: String): void
-        + displayMenu(): void
-        + getInputString(): String
-        + getInputInt(): int
-        + getInputYesNo(): String
-    }
-
-    class Task {
-        - id: int
-        - category: String
-        - name: String
-        - priority: String
-        - date: LocalDate
-        - status: boolean
-        - description: String
-        --
-        + Task(id: int, category: String, name: String, priority: String, date: LocalDate, status: boolean, description: String)
-        + getters and setters
-    }
-
-    class TaskList {
-        - tasks: List<Task>
-        --
-        + TaskList()
-        + getTaskList(): List<Task>
-        + addTask(task: Task): void
-        + removeTask(task: Task): void
-        + updateTask(task: Task): void
-        + completeTask(task: Task): void
-        + searchTasksByCategory(category: String): List<Task>
-        + searchTasksByPriority(priority: String): List<Task>
-        + searchTasksByStatus(status: boolean): List<Task>
-    }
-
-    class CategoryComparator {
-        <<Comparator>>
-        --
-        + compare(t1: Task, t2: Task): int
-    }
-
-    class CompletionComparator {
-        <<Comparator>>
-        - secondaryComparator: Comparator<Task>
-        - secondaryComparable: Comparable<Task>
-        --
-        + CompletionComparator(secondaryComparator: Comparator<Task>)
-        + CompletionComparator(secondaryComparable: Comparable<Task>)
-        + compare(o1: Task, o2: Task): int
-    }
-
-    class PriorityComparator {
-        <<Comparator>>
-        --
-        + compare(t1: Task, t2: Task): int
-        + getLevel(priority: String): int
-    }
-
-    class Priority {
-        <<Enum>>
-        + NONE
-        + LOW
-        + MEDIUM
-        + HIGH
-    }
-
-    TodoApp -- TaskList
-    TodoApp -- UI
-    TaskList -- Task
-    TaskList ..> CategoryComparator
-    TaskList ..> CompletionComparator
-    TaskList ..> PriorityComparator
-
-
+![This is the class diagram](/data/ClassDiagram.png "Class Diagram")
 
 ### externí knihovna
 
