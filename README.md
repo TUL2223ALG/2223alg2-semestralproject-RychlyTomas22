@@ -42,7 +42,7 @@ ukládá list objektů task
 
 ### class diagram
 
-![This is the class diagram](/data/ClassDiagram.png "Class Diagram")
+![This is the class diagram](./src/data/ClassDiagram.png "Class Diagram")
 
 ### externí knihovna
 
