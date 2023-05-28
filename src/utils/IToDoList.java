@@ -8,7 +8,9 @@ import java.util.List;
  * list.
  */
 public interface IToDoList {
-
+    
+    public void saveTodaysTasks();
+    
     /**
      * Adds a task to the task list.
      *
