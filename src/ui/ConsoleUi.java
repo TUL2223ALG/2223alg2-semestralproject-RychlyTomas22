@@ -11,10 +11,9 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Scanner;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import utils.IToDoList;
 
 /**
@@ -78,6 +77,9 @@ public class ConsoleUi {
                     setDataFormat();
                     break;
                 case 10:
+                    iface.saveTodaysTasks();
+                    break;
+                case 11:
                     isRunning = false;
                     break;
                 default:
@@ -101,9 +103,10 @@ public class ConsoleUi {
         System.out.println("5. Display ToDo list");
         System.out.println("6. Save the ToDo list to a file");
         System.out.println("7. Load the ToDo list from a file");
-        System.out.println("8. select path to Data folder");
-        System.out.println("9. switch Data format (txt / binary)");
-        System.out.println("10. Exit");
+        System.out.println("8. Select path to Data folder");
+        System.out.println("9. Switch Data format (txt / binary)");
+        System.out.println("10. Save today's tasks ");
+        System.out.println("11. Exit");
         System.out.print("Enter your choice: ");
     }
 
@@ -116,11 +119,17 @@ public class ConsoleUi {
      */
     private void add() {
 
+        String cat;
         System.out.println("what category would you like to assign to this task ?");
-        System.out.println("write the full name of the category");
-        System.out.println(iface.getListCategories());
+        do {
+            System.out.println("write the full name of the category");
+            System.out.println(iface.getListCategories());
 
-        String cat = sc.nextLine();
+            cat = sc.nextLine();
+            if (!iface.isViableCategory(cat)) {
+                System.out.println("Invalid selection of category");
+            }
+        } while (!iface.isViableCategory(cat));
 
         System.out.println("add name of the task");
         String name = sc.nextLine();
@@ -128,31 +137,32 @@ public class ConsoleUi {
         System.out.println("add description");
         String description = sc.nextLine();
 
-        System.out.println("set priority");
-        System.out.println(iface.getListPriority());
-        String priority = sc.nextLine().toUpperCase();
-
-        System.out.println("set date ( format dd.mm.yyyy )");
-        String string = sc.nextLine();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
-        try {
-            LocalDate date = LocalDate.parse(string, formatter);
-
-            boolean isDone = false;
-
-            if (iface.isViableCategory(cat) && iface.isViablePriority(priority)) {
-                Task temp = new Task(cat, name, description, priority, date, isDone);
-                iface.addTask(iface.getTaskList(), temp);
-            } else if (!iface.isViableCategory(cat)) {
-                System.out.println("invalid selection of category");
-            } else {
-                System.out.println("invalid selection of priority");
+        String priority;
+        do {
+            System.out.println("set priority");
+            System.out.println(iface.getListPriority());
+            priority = sc.nextLine().toUpperCase();
+            if (!iface.isViablePriority(priority)) {
+                System.out.println("Invalid selection of priority. Please try again.");
             }
+        } while (!iface.isViablePriority(priority));
 
-        } catch (DateTimeParseException ex) {
-            System.out.println("Invalid date format. Enter the date in the format [dd.mm.yyyy].");
-        }
-
+        String string;
+        LocalDate date;
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+        do {
+            System.out.println("set date ( format dd.mm.yyyy )");
+            string = sc.nextLine();
+            try {
+                date = LocalDate.parse(string, formatter);
+                break; // Break out of the loop if the date parsing is successful
+            } catch (DateTimeParseException ex) {
+                System.out.println("Invalid date format. Enter the date in the format [dd.mm.yyyy]. Please try again.");
+            }
+        } while (true);
+        boolean isDone = false;
+        Task temp = new Task(cat, name, description, priority, date, isDone);
+        iface.addTask(iface.getTaskList(), temp);
     }
 
     /**
@@ -208,9 +218,15 @@ public class ConsoleUi {
                     int selection = getInputAsInt(sc);
                     switch (selection) {
                         case 1:
-                            System.out.println("write (select) new category");
-                            System.out.println(iface.getListCategories());
-                            String newCat = sc.nextLine();
+                            String newCat;
+                            do {
+                                System.out.println("write (select) new category");
+                                System.out.println(iface.getListCategories());
+                                newCat = sc.nextLine();
+                                if (!iface.isViableCategory(newCat)) {
+                                    System.out.println("Invalid selection of category");
+                                }
+                            } while (!iface.isViableCategory(newCat));
                             iface.getTaskOnIndex(index).setCategory(newCat);
                             break;
                         case 2:
@@ -224,21 +240,31 @@ public class ConsoleUi {
                             iface.getTaskOnIndex(index).setDescription(newDescr);
                             break;
                         case 4:
-                            System.out.println("write (select) new priority");
-                            String newPri = sc.nextLine();
+                            String newPri;
+                            do {
+                                System.out.println("write (select) new priority");
+                                newPri = sc.nextLine();
+                                if (!iface.isViablePriority(newPri)) {
+                                    System.out.println("Invalid selection of priority. Please try again.");
+                                }
+                            } while (!iface.isViablePriority(newPri));
                             iface.getTaskOnIndex(index).setPriority(newPri.toUpperCase());
                             break;
                         case 5:
-                            System.out.println("set date ( format dd.mm.yyyy )");
-                            String string = sc.nextLine();
+                            String string;
+                            LocalDate date = null;
                             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
-                            try {
-                                LocalDate date = LocalDate.parse(string, formatter);
-                                iface.getTaskOnIndex(index).setDate(date);
-                                break;
-                            } catch (DateTimeParseException ex) {
-                                Logger.getLogger(ConsoleUi.class.getName()).log(Level.SEVERE, null, ex);
-                            }
+                            do {
+                                System.out.println("set date ( format dd.mm.yyyy )");
+                                string = sc.nextLine();
+                                try {
+                                    date = LocalDate.parse(string, formatter);
+                                    break;
+                                } catch (DateTimeParseException ex) {
+                                    System.out.println("Invalid date format. Enter the date in the format [dd.mm.yyyy]. Please try again.");
+                                }
+                            } while (true);
+                            iface.getTaskOnIndex(index).setDate(date);
                             break;
                         case 6:
                             if (iface.getTaskOnIndex(index).isStatus()) {
@@ -257,6 +283,7 @@ public class ConsoleUi {
                             break;
 
                     }
+
                 }
             } else if (index == 0) {
                 System.out.println("exiting");

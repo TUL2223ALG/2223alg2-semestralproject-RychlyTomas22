@@ -13,7 +13,9 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
@@ -36,6 +38,46 @@ public class TaskList implements IToDoList {
      */
     public TaskList() {
         tasks = new ArrayList<Task>();
+    }
+
+    /**
+     * Saves today's tasks to a text file. The tasks are sorted based on their
+     * priority before saving.
+     */
+    public void saveTodaysTasks() {
+        File file = new File(getPath() + System.getProperty("file.separator") + "TodaysTasks.txt");
+        LocalDate today = LocalDate.now();
+        try {
+            if (file.createNewFile()) {
+                System.out.println("New file created: " + file.getAbsolutePath());
+            } else {
+                System.out.println("File already exists: " + file.getAbsolutePath());
+            }
+        } catch (IOException ex) {
+            System.out.println("Failed to create file: " + ex.getMessage());
+            return;
+        }
+
+        PriorityComparator priorityComparator = new PriorityComparator();
+        Collections.sort(tasks, priorityComparator);
+
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
+            for (Task task : tasks) {
+                if (task.getDate().equals(today)) {
+                    String taskString = "Category: " + task.getCategory() + "\n"
+                            + "Name: " + task.getName() + "\n"
+                            + "Description: " + task.getDescription() + "\n"
+                            + "Priority: " + task.getPriority() + "\n"
+                            + "Date: " + task.getDate().format(DateTimeFormatter.ofPattern("dd.MM.yyyy")) + "\n"
+                            + "Status: " + (task.isStatus() ? "Completed" : "Pending") + "\n";
+                    writer.write(taskString);
+                    writer.newLine();
+                }
+            }
+            System.out.println("Tasks saved: " + file.getAbsolutePath());
+        } catch (IOException e) {
+            System.err.println("Failed to write tasks to file: " + e.getMessage());
+        }
     }
 
     /**
@@ -89,11 +131,9 @@ public class TaskList implements IToDoList {
             return false;
 
         } catch (IOException ex) {
-            Logger.getLogger(TaskList.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println("failed tor read Categories.txt ");
+            return false;
         }
-
-        return false;
-
     }
 
     /**
@@ -352,7 +392,8 @@ public class TaskList implements IToDoList {
         try {
             config.load(new FileReader("src/utils/config.txt"));
         } catch (IOException ex) {
-            Logger.getLogger(TaskList.class.getName()).log(Level.SEVERE, null, ex);
+            System.err.println("Error: Failed to read the configuration file.");
+            ex.printStackTrace();
         }
         return config.getProperty("data_format");
     }
