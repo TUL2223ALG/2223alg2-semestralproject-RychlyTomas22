@@ -9,6 +9,9 @@ import java.util.List;
  */
 public interface IToDoList {
     
+     /**
+     * Saves task with the current date into a txt file in a readable format
+     */
     public void saveTodaysTasks();
     
     /**
